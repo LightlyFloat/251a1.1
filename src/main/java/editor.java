@@ -115,6 +115,13 @@ class windowEditor extends JFrame implements ActionListener {
         mousePaste.addActionListener(this);
         mouseDelete.addActionListener(this);
         mouseSelectAll.addActionListener(this);
+
+        mouseMenu.add(mouseCut);
+        mouseMenu.add(mouseCopy);
+        mouseMenu.add(mousePaste);
+        mouseMenu.add(mouseDelete);
+        mouseMenu.add(mouseSelectAll);
+
         validate();
     }
 
