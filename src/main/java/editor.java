@@ -3,6 +3,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -223,10 +225,6 @@ class windowEditor extends JFrame implements ActionListener {
             new functionFind(f,textArea);
         }
         //Replace button implement
-        else if (e.getSource() == itemReplace) {
-            new functionReplace();
-        }
-        //Font format button implement
         else if (e.getSource() == itemFontFormat) {
             new functionFontFormat(f,textArea);
         }
@@ -369,11 +367,37 @@ class windowEditor extends JFrame implements ActionListener {
             jdlg.setVisible(true);
         }
     }
-    class functionPrint extends JFrame{}
-    class functionReplace extends JFrame{}
+    class functionPrint extends JFrame{
+
+            JButton button1,button2;
+            functionPrint
+                    (){
+                setLayout(new FlowLayout());
+                setTitle("打印");
+                setBounds(100,100,300,100);
+                setVisible(true);
+                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                button1=new JButton("打印");
+                button2=new JButton("打印预览");
+                add(button1);
+                add(button2);
+                button1.addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            PrinterJob job = PrinterJob.getPrinterJob();     //创建打印对象
+                            if (!job.printDialog()) {                        //取消打印
+                                return;
+                            }
+                            job.print();                                     //实现打印
+                        } catch (PrinterException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+            }
+        }
+    }
     class functionFontFormat extends JDialog{
-
-
         public functionFontFormat(JFrame f,JTextArea textArea) {
 
             //获取系统字体库
@@ -518,5 +542,5 @@ class windowEditor extends JFrame implements ActionListener {
             jdlg.setVisible(true);
         }
     }
-}
+
 
