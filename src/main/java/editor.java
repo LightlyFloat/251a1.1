@@ -1,5 +1,9 @@
 import javax.swing.*; //Import swing and AWT packages to implement GUI
+import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 
 public class editor {
@@ -16,6 +20,7 @@ class windowEditor extends JFrame implements ActionListener {
             itemOpen, itemFontFormat, itemAbout, mouseCut, mouseCopy, mousePaste, mouseDelete, mouseSelectAll; //Initialization function key
     JScrollPane scrollPane; //scroll bar
     JPopupMenu mouseMenu;
+    JFileChooser fileChooser = new JFileChooser();
 
     windowEditor() {
         setTitle("Text Editor"); //Sets the title for this window
@@ -127,6 +132,106 @@ class windowEditor extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) //Sets the behavior when the button is pressed
     {
-
+        //New button implement
+        if (e.getSource() == itemNew) {
+            text1.replaceRange("", 0, text1.getText().length()); //Replacing all text with an empty string， which has the same effect as emptying the text area
+        }
+        //New Window button implement
+        else if (e.getSource() == itemNewWindow) {
+            windowEditor NewWindow = new windowEditor();
+        }
+        //Open button implement
+        else if (e.getSource() == itemOpen) {
+            FileDialog openFile = new FileDialog(this, "Form..", FileDialog.LOAD);  //Create a new window to select the file path
+            openFile.setVisible(true);
+            openFile.setLocation(800, 400); //Set the location of the FileDialog window
+            String filePath = openFile.getDirectory() + openFile.getFile(); //Get file path
+            try {
+                FileInputStream inputStream = new FileInputStream(filePath);
+                byte[] content = new byte[inputStream.available()]; //The array is established by the length of the file input stream
+                inputStream.read(content);
+                text1.setText(new String(content));
+                text1.setCaretPosition(0); //Set the starting position of the text
+                if (openFile.getFile() != null) {
+                    this.setTitle(openFile.getFile()); //Set the window name to file name
+                }
+                inputStream.close(); //Close file input stream
+            } catch (Exception ex) {
+                ex.printStackTrace(); //print Location and causes of errors in command line
+            }
+        }
+        //Save button implement
+        else if (e.getSource() == itemSave) {
+            int i = fileChooser.showSaveDialog(windowEditor.this); //Display The window for saving the file, and the return value is:APPROVE_OPTION 0 CANCEL_OPTION ERROR_OPTION -1
+            if (i == JFileChooser.APPROVE_OPTION) //Determine whether the window was successfully created
+            {
+                File selectedFile = fileChooser.getSelectedFile();//Create a file using the path selected in the previous window
+                try {
+                    FileOutputStream out = new FileOutputStream(selectedFile);
+                    out.write(text1.getText().getBytes());//Write the text in textarea to file
+                } catch (Exception ex) {
+                    ex.printStackTrace(); //print Location and causes of errors in command line
+                }
+            }
+        }
+        //Save as button implement
+        else if (e.getSource() == itemSaveAs) {
+            int i = fileChooser.showSaveDialog(windowEditor.this); //Display The window for saving the file, and the return value is:APPROVE_OPTION 0 CANCEL_OPTION ERROR_OPTION -1
+            if (i == JFileChooser.APPROVE_OPTION) //Determine whether the window was successfully created
+            {
+                File selectedFile = fileChooser.getSelectedFile(); //Create a file using the path selected in the previous window
+                try {
+                    FileOutputStream out = new FileOutputStream(selectedFile);
+                    out.write(text1.getText().getBytes()); //Writing text from textarea to file
+                } catch (Exception ex) {
+                    ex.printStackTrace(); //print Location and causes of errors in command line
+                }
+            }
+        }
+        //Print button implement
+        else if (e.getSource() == itemPrint) {
+            new functionPrint();
+        }
+        //Copy button implement
+        else if (e.getSource() == itemCopy || e.getSource() == mouseCopy) {
+            text1.copy();//Transfer the currently selected range in the associated text model to the system clipboard without changing the template
+        }
+        //Cut button implement
+        else if (e.getSource() == itemCut || e.getSource() == mouseCut) {
+            text1.cut(); //Transfer the currently selected range in the associated text model to the system clipboard and delete the selected text in the template
+        }
+        //Paste button implement
+        else if (e.getSource() == itemPaste || e.getSource() == mousePaste) {
+            text1.paste(); //Transfers the contents of the system clipboard to the associated text model
+        }
+        //Delete button implement
+        else if (e.getSource() == mouseDelete) {
+            text1.replaceRange("", 0, text1.getText().length());
+        }
+        //Select all button implement
+        else if (e.getSource() == mouseSelectAll) {
+            text1.selectAll(); //Select all text in textarea
+        }
+        //Find button implement
+        else if (e.getSource() == itemFind) {
+            new functionFind();
+        }
+        //Replace button implement
+        else if (e.getSource() == itemReplace) {
+            new functionReplace();
+        }
+        //Font format button implement
+        else if (e.getSource() == itemFontFormat) {
+            new functionFontFormat();
+        }
+        //About button implement
+        else if (e.getSource() == itemAbout) {
+            JOptionPane.showMessageDialog(windowEditor.this, "159251 assignment1 write by Zhuang Yan and Zhang QingYang"); //Brings up an information-message dialog titled "Message".
+        }
     }
+    class functionFind extends JFrame{}
+    class functionPrint extends JFrame{}
+    class functionReplace extends JFrame{}
+    class functionFontFormat extends JFrame{}
 }
+
