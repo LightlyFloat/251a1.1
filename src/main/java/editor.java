@@ -13,8 +13,9 @@ class windowEditor extends JFrame implements ActionListener {
     JMenuBar menuBar; //menu bar
     JMenu menu1, menu2, menu3, menu4; //Four buttons in the menu bar (drop-down menu)
     JMenuItem itemNew, itemNewWindow, itemSave, itemSaveAs, itemPrint, itemCut, itemCopy, itemPaste, itemFind, itemReplace,
-            itemOpen, itemFontFormat, itemAbout; //Initialization function key
+            itemOpen, itemFontFormat, itemAbout, mouseCut, mouseCopy, mousePaste, mouseDelete, mouseSelectAll; //Initialization function key
     JScrollPane scrollPane; //scroll bar
+    JPopupMenu mouseMenu;
 
     windowEditor() {
         setTitle("Text Editor"); //Sets the title for this window
@@ -90,6 +91,30 @@ class windowEditor extends JFrame implements ActionListener {
 
         scrollPane = new JScrollPane(text1); //Add a new scroll bar in text1 text area
         add(scrollPane); //Appends the scrollPane to the end of this container.
+        validate();
+
+        //Right click menu settings
+        mouseMenu = new JPopupMenu();
+        mouseCut = new JMenuItem("Cut");
+        mouseCopy = new JMenuItem("Copy");
+        mousePaste = new JMenuItem("Paste");
+        mouseDelete = new JMenuItem("Delete");
+        mouseSelectAll = new JMenuItem("Select all");
+
+        //set mouse listener
+        text1.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if (e.getModifiersEx() == InputEvent.BUTTON3_DOWN_MASK)
+                    mouseMenu.show(text1, e.getX(), e.getY()); //Set to display the right-click menu where the right mouse button is clicked
+            }
+        });
+
+        //Add ActionListeners to buttons
+        mouseCut.addActionListener(this);
+        mouseCopy.addActionListener(this);
+        mousePaste.addActionListener(this);
+        mouseDelete.addActionListener(this);
+        mouseSelectAll.addActionListener(this);
         validate();
     }
 
